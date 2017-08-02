@@ -9,6 +9,3 @@
 bin/
 target/
 log/
-src/main/webapp/excel/*
-
-jjl_mdm.iml
