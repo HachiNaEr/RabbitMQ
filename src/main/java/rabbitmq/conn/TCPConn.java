@@ -23,12 +23,9 @@ public class TCPConn {
 		factory.setUsername(prop.getProperty("USERNAME"));
 		factory.setPassword(prop.getProperty("PASSWORD"));
 		factory.setAutomaticRecoveryEnabled(true);
-
+		
 		RabbitMQUtil.conn = factory.newConnection();
 		RabbitMQUtil.conn.addShutdownListener((cause) -> {
-			System.err.println("shutdown signal received " + cause);
-			boolean isHard = cause.isHardError();
-			System.err.println(isHard); 
 			if (RabbitMQUtil.conn == null) {
 				try {
 					RabbitMQUtil.conn = factory.newConnection();

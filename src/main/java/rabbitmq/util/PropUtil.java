@@ -17,7 +17,7 @@ public class PropUtil {
 		try {
 			prop.load(inputStream);
 		} catch (IOException exception) {
-			logger.debug(ExceptionUtils.getStackTrace(exception));
+			logger.debug(fileName + " : "+ ExceptionUtils.getStackTrace(exception));
 		}
 		return prop;
 	}
