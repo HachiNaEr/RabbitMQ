@@ -25,16 +25,13 @@ public class Config extends JFinalConfig{
 	public void configRoute(Routes me) {
 		me.add("/rabbit", RabbitMQController.class);
 	}
-
+	
 	@Override
 	public void configEngine(Engine me) {}
-
 	@Override
-	public void configPlugin(Plugins me) {}
-
+	public void configPlugin(Plugins me) {} 
 	@Override
-	public void configInterceptor(Interceptors me) {}
-
+	public void configInterceptor(Interceptors me) {} 
 	@Override
 	public void configHandler(Handlers me) {}
 }

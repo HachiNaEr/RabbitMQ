@@ -1,26 +1,27 @@
 package rabbitmq.conn;
 
 import java.io.IOException;
+import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jfinal.plugin.IPlugin;
-import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.ConnectionFactory;
 
 import rabbitmq.mq.RabbitMQUtil;
+import rabbitmq.util.PropUtil;
 
 public class TCPConn {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	public static ConnectionFactory factory = new ConnectionFactory();
 	
 	public void conn() throws IOException, TimeoutException{
-		factory.setHost("localhost");
-		factory.setPort(5672);
-		factory.setUsername("liuyongjian");
-		factory.setPassword("123456");
+		Properties prop = PropUtil.readProp("conn.properties");
+		factory.setHost(prop.getProperty("HOST"));
+		factory.setPort(Integer.valueOf(prop.getProperty("PORT")));
+		factory.setUsername(prop.getProperty("USERNAME"));
+		factory.setPassword(prop.getProperty("PASSWORD"));
 		factory.setAutomaticRecoveryEnabled(true);
 
 		RabbitMQUtil.conn = factory.newConnection();
