@@ -4,10 +4,8 @@ import java.io.IOException;
 
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
 
 public class RabbitMQUtil {
-	public static Connection conn ;
 	public static Channel channel ;
 	
 	public static final String DEFAULT_EXCHANGE = "DEFAULT_EXCHANGE";
