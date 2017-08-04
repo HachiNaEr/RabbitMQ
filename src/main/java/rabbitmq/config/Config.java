@@ -10,7 +10,6 @@ import com.jfinal.core.JFinal;
 import com.jfinal.template.Engine;
 
 import rabbitmq.controller.RabbitMQController;
-import rabbitmq.mq.MQPlugin;
 
 public class Config extends JFinalConfig{
 	public static void main(String[] args) {
@@ -31,9 +30,7 @@ public class Config extends JFinalConfig{
 	public void configEngine(Engine me) {}
 
 	@Override
-	public void configPlugin(Plugins me) {
-		me.add(new MQPlugin());
-	}
+	public void configPlugin(Plugins me) {}
 
 	@Override
 	public void configInterceptor(Interceptors me) {}

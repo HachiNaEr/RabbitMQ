@@ -1,4 +1,4 @@
-package rabbitmq.mq;
+package rabbitmq.conn;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -10,11 +10,13 @@ import com.jfinal.plugin.IPlugin;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.ConnectionFactory;
 
-public class MQPlugin implements IPlugin{
+import rabbitmq.mq.RabbitMQUtil;
+
+public class TCPConn {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	public static ConnectionFactory factory = new ConnectionFactory();
 	
-	private void conn() throws IOException, TimeoutException{
+	public void conn() throws IOException, TimeoutException{
 		factory.setHost("localhost");
 		factory.setPort(5672);
 		factory.setUsername("liuyongjian");
@@ -34,36 +36,6 @@ public class MQPlugin implements IPlugin{
 				}
 			}
 		});
-	}
-
-	@Override
-	public boolean start() {
-		try {
-			conn();
-			RabbitMQUtil.channel = RabbitMQUtil.conn.createChannel();
-			RabbitMQUtil.channel.addShutdownListener((cause) -> {
-				try {
-					RabbitMQUtil.channel = RabbitMQUtil.conn.createChannel();
-				} catch (IOException e) {
-					e.printStackTrace();
-			}
-		});
-		RabbitMQUtil.channel.exchangeDeclare(RabbitMQUtil.DEFAULT_EXCHANGE, BuiltinExchangeType.DIRECT, true);
-		} catch (IOException | TimeoutException e) {
-			e.printStackTrace();
-		}
-		return true;
-	}
-
-	@Override
-	public boolean stop() {
-		try {
-			RabbitMQUtil.channel.close();
-			RabbitMQUtil.conn.close();
-		} catch (IOException | TimeoutException exception) {
-			exception.printStackTrace();
-		}
-		return true;
 	}
 }
 
