@@ -50,7 +50,7 @@ public class CDemo{
 	}
 	
 	public static void init() throws IOException{
-		CONDemo consumer = new CONDemo(channel);
+		SuperConsumer consumer = new SuperConsumer(channel);
 		
 		Map<String, Object> arguments = new HashMap<>();
 		arguments.put("x-dead-letter-exchange","DLX_exchange");

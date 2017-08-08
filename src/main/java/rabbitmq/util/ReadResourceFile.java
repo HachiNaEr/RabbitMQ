@@ -8,8 +8,8 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PropUtil {
-	private static Logger logger = LoggerFactory.getLogger(PropUtil.class);
+public class ReadResourceFile {
+	private static Logger logger = LoggerFactory.getLogger(ReadResourceFile.class);
 	
 	public static Properties readProp(String fileName){
 		InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);

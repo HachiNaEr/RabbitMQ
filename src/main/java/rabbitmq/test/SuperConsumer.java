@@ -8,11 +8,11 @@ import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.Envelope;
 import com.rabbitmq.client.ShutdownSignalException;
 
-public class CONDemo implements Consumer{
+public class SuperConsumer implements Consumer{
 	
     private final Channel channel;
 
-    public CONDemo(Channel _channel) {
+    public SuperConsumer(Channel _channel) {
     	channel = _channel;
     }
 	

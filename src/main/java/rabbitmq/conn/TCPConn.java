@@ -11,14 +11,14 @@ import org.slf4j.LoggerFactory;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-import rabbitmq.util.PropUtil;
+import rabbitmq.util.ReadResourceFile;
 
 public class TCPConn {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	public static ConnectionFactory factory = new ConnectionFactory();
 	
 	public Connection conn(){
-		Properties prop = PropUtil.readProp("conn.properties");
+		Properties prop = ReadResourceFile.readProp("conn.properties");
 		factory.setHost(prop.getProperty("HOST"));
 		factory.setPort(Integer.valueOf(prop.getProperty("PORT")));
 		factory.setUsername(prop.getProperty("USERNAME"));

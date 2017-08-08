@@ -34,11 +34,4 @@ public class CreateChannel {
 			}
 		}
 	}
-	
-	public static void main(String[] args) {
-		CreateChannel channels = new CreateChannel();
-		channels.create(2);
-		
-		System.err.println(channels.channelMap);
-	}
 }
