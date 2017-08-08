@@ -1,4 +1,4 @@
-package rabbitmq.test;
+package rabbitmq.producer;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-public class PDemo {
+public class SuperProducer {
 	public static void main(String[] args) {
 		try {
 			ConnectionFactory factory = new ConnectionFactory();
