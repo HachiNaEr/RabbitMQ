@@ -1,9 +1,8 @@
 package rabbitmq.producer;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,22 +13,57 @@ import rabbitmq.conn.ChannelGroup;
 
 public class Producer {
 	Logger logger = LoggerFactory.getLogger(getClass());
+	private Channel channel;
+	private String queue;
+	private String exchange;
+	private String route;
 	
-	public void sendMSG(){
+	public static final BuiltinExchangeType HEADERS = BuiltinExchangeType.HEADERS;
+	public static final BuiltinExchangeType FANOUT = BuiltinExchangeType.FANOUT;
+	public static final BuiltinExchangeType DIRECT = BuiltinExchangeType.DIRECT;
+	public static final BuiltinExchangeType TOPIC = BuiltinExchangeType.TOPIC;
+	
+	public Producer(){
+		channel = ChannelGroup.getChannel();
+	}
+	
+	public Producer declareQ(String name){
 		try {
-			Channel channel = ChannelGroup.getChannel();
-			
-			Map<String, Object> arguments = new HashMap<>();
-			arguments.put("x-dead-letter-exchange","DLX_exchange");
-			arguments.put("x-dead-letter-routing-key", "dlx");
-			channel.queueDeclare("QUEUE", true, false, false, arguments);
-			
-			channel.exchangeDeclare("EXCHANGE", BuiltinExchangeType.DIRECT, true);
-			channel.queueBind("QUEUE", "EXCHANGE", "QUEUE");
-			channel.basicPublish("EXCHANGE", "QUEUE", null, "TWO".getBytes());
-			
+			this.queue = name;
+			channel.queueDeclare(name, true, false, false, null);
 		} catch (IOException exception) {
-			exception.printStackTrace();
+			logger.debug(ExceptionUtils.getStackTrace(exception));
 		}
+		return this;
+	}
+	
+	public Producer declareE(String exchange, String route){
+		try {
+			this.exchange = exchange;
+			this.route = route;
+			channel.exchangeDeclare(exchange, DIRECT, true, false, null);
+			channel.queueBind(queue, exchange, route);
+		} catch (IOException exception) {
+			logger.debug(ExceptionUtils.getStackTrace(exception));
+		}
+		return this;
+	}
+	
+	public void publishMsg(Object o){
+		try {
+			channel.basicPublish(exchange, route, null, o.toString().getBytes());
+		} catch (IOException exception) {
+			logger.debug(ExceptionUtils.getStackTrace(exception));
+		}
+	}
+	
+	public static void main(String[] args) {
+		Producer producer = new Producer().declareQ("QUEUE").declareE("EXCHANGE", "ROUTE");
+		
+		producer.publishMsg("ONE");
+		producer.publishMsg("TWO");
+		producer.publishMsg("THREE");
+		producer.publishMsg("FOUR");
+		producer.publishMsg("FIVE");
 	}
 }
