@@ -1,8 +1,8 @@
-package rabbitmq.enums;
+package rabbitmq.util;
 
 import java.util.Map;
 
-public class SetBindQueueArguments {
+public class SetMessageArguments {
 	public Map<String, Object> arguments;
 	
 	public Map<String, Object> getArguments(){ return arguments; }

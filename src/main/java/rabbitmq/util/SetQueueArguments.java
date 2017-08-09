@@ -1,6 +1,8 @@
-package rabbitmq.enums;
+package rabbitmq.util;
 
 import java.util.Map;
+
+import rabbitmq.enums.QueueArguments;
 
 public class SetQueueArguments {
 	public Map<String, Object> arguments;

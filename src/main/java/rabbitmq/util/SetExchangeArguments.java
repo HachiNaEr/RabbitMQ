@@ -1,6 +1,8 @@
-package rabbitmq.enums;
+package rabbitmq.util;
 
 import java.util.Map;
+
+import rabbitmq.enums.ExchangeArguments;
 
 public class SetExchangeArguments {
 	public Map<String, Object> arguments;
