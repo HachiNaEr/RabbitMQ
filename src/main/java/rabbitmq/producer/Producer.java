@@ -3,23 +3,21 @@ package rabbitmq.producer;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 
-public class SuperProducer {
-	public static void main(String[] args) {
+import rabbitmq.conn.ChannelGroup;
+
+public class Producer {
+	Logger logger = LoggerFactory.getLogger(getClass());
+	
+	public void sendMSG(){
 		try {
-			ConnectionFactory factory = new ConnectionFactory();
-			factory.setHost("192.168.0.14");
-			factory.setPort(5672);
-			factory.setUsername("liuyongjian");
-			factory.setPassword("123456");
-			Connection connection = factory.newConnection();
-			Channel channel = connection.createChannel();
+			Channel channel = ChannelGroup.getChannel();
 			
 			Map<String, Object> arguments = new HashMap<>();
 			arguments.put("x-dead-letter-exchange","DLX_exchange");
@@ -30,10 +28,8 @@ public class SuperProducer {
 			channel.queueBind("QUEUE", "EXCHANGE", "QUEUE");
 			channel.basicPublish("EXCHANGE", "QUEUE", null, "TWO".getBytes());
 			
-			channel.close();
-			connection.close();
-		} catch (IOException | TimeoutException e) {
-			e.printStackTrace();
+		} catch (IOException exception) {
+			exception.printStackTrace();
 		}
 	}
 }

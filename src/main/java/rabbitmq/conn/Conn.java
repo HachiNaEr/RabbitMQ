@@ -1,6 +1,7 @@
 package rabbitmq.conn;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 
@@ -13,11 +14,24 @@ import com.rabbitmq.client.ConnectionFactory;
 
 import rabbitmq.util.ReadResourceFile;
 
-public class TCPConn {
+public class Conn {
 	Logger logger = LoggerFactory.getLogger(getClass());
-	public static ConnectionFactory factory = new ConnectionFactory();
+	private static Connection conn;
 	
-	public Connection conn(){
+	public static Connection getConn(){
+		if (Optional.ofNullable(conn).isPresent()) {
+			return conn;
+		} 
+		synchronized (Conn.class) {
+			new Conn();
+		}
+		return conn;
+	}
+	
+	private Conn(){ conn(); }
+	
+	private void conn(){
+		ConnectionFactory factory = new ConnectionFactory();
 		Properties prop = ReadResourceFile.readProp("conn.properties");
 		factory.setHost(prop.getProperty("HOST"));
 		factory.setPort(Integer.valueOf(prop.getProperty("PORT")));
@@ -25,22 +39,10 @@ public class TCPConn {
 		factory.setPassword(prop.getProperty("PASSWORD"));
 		factory.setAutomaticRecoveryEnabled(true);
 		
-		Connection conn = null;
 		try {
-			conn = factory.newConnection();
+			 conn = factory.newConnection();
 		} catch (IOException | TimeoutException e) {
-			logger.debug("创建TCP连接异常：" + ExceptionUtils.getStackTrace(e));
+			logger.debug("create TCP connection exception ：" + ExceptionUtils.getStackTrace(e));
 		}
-		/*RabbitMQUtil.conn.addShutdownListener((cause) -> {
-			if (RabbitMQUtil.conn == null) {
-				try {
-					RabbitMQUtil.conn = factory.newConnection();
-				} catch (IOException | TimeoutException e) {
-					e.printStackTrace();
-				}
-			}
-		});*/
-		return conn;
 	}
 }
-
