@@ -8,40 +8,29 @@ import org.slf4j.LoggerFactory;
 
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.AMQP.BasicProperties;
 
 import rabbitmq.conn.ChannelGroup;
+import rabbitmq.util.MessageBasicProp;
+import rabbitmq.util.QueueBasicProp;
 
 public class Producer {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	private Channel channel;
-	private String queue;
-	private String exchange;
-	private String route;
 	
 	public static final BuiltinExchangeType HEADERS = BuiltinExchangeType.HEADERS;
 	public static final BuiltinExchangeType FANOUT = BuiltinExchangeType.FANOUT;
 	public static final BuiltinExchangeType DIRECT = BuiltinExchangeType.DIRECT;
 	public static final BuiltinExchangeType TOPIC = BuiltinExchangeType.TOPIC;
 	
-	public Producer(){
-		channel = ChannelGroup.getChannel();
-	}
+	public Producer(){ channel = ChannelGroup.getChannel(); }
 	
-	public Producer declareQ(String name){
+	public Producer init(String queue, String exchange, String route){
 		try {
-			this.queue = name;
-			channel.queueDeclare(name, true, false, false, null);
-		} catch (IOException exception) {
-			logger.debug(ExceptionUtils.getStackTrace(exception));
-		}
-		return this;
-	}
-	
-	public Producer declareE(String exchange, String route){
-		try {
-			this.exchange = exchange;
-			this.route = route;
+			channel.queueDeclare(queue, true, false, false, new QueueBasicProp().priority(5).build());
+			
 			channel.exchangeDeclare(exchange, DIRECT, true, false, null);
+			
 			channel.queueBind(queue, exchange, route);
 		} catch (IOException exception) {
 			logger.debug(ExceptionUtils.getStackTrace(exception));
@@ -49,21 +38,24 @@ public class Producer {
 		return this;
 	}
 	
-	public void publishMsg(Object o){
+	public void sendMsg(String exchange, String route, Object o){
 		try {
-			channel.basicPublish(exchange, route, null, o.toString().getBytes());
+			BasicProperties prop = new MessageBasicProp().priority(4).build();
+			channel.basicPublish(exchange, route, prop, o.toString().getBytes());
 		} catch (IOException exception) {
 			logger.debug(ExceptionUtils.getStackTrace(exception));
 		}
 	}
 	
 	public static void main(String[] args) {
-		Producer producer = new Producer().declareQ("QUEUE").declareE("EXCHANGE", "ROUTE");
+		Producer producer = new Producer();
+		producer.init("QUEUE", "EXCHANGE", "ROUTE");
 		
-		producer.publishMsg("ONE");
-		producer.publishMsg("TWO");
-		producer.publishMsg("THREE");
-		producer.publishMsg("FOUR");
-		producer.publishMsg("FIVE");
+//		producer.sendMsg("EXCHANGE", "ROUTE", "ONE");
+//		producer.sendMsg("EXCHANGE", "ROUTE", "TWO");
+//		producer.sendMsg("EXCHANGE", "ROUTE", "THREE");
+//		producer.sendMsg("EXCHANGE", "ROUTE", "FOUR");
+//		producer.sendMsg("EXCHANGE", "ROUTE", "FIVE");
+		producer.sendMsg("EXCHANGE", "ROUTE", "SIX");
 	}
 }
