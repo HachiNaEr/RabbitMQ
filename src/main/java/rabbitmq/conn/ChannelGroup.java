@@ -2,6 +2,7 @@ package rabbitmq.conn;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -27,6 +28,9 @@ public class ChannelGroup {
 	
 	private ChannelGroup() { create(); }
 
+	/**
+	 * 创建一个Channel
+	 */
 	private void create(){
 		Connection connection = Conn.getConn();
 		try {
@@ -37,5 +41,19 @@ public class ChannelGroup {
 		} catch (IOException exception) {
 			logger.debug(ExceptionUtils.getStackTrace(exception));
 		}
+	}
+	
+	/**
+	 *  关闭Channel
+	 */
+	public static void close(){
+		if (Optional.ofNullable(channel).isPresent()) {
+			try {
+				channel.close();
+			} catch (IOException | TimeoutException e) {
+				e.printStackTrace();
+			}
+		}
+		Conn.close();
 	}
 }

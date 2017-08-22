@@ -18,7 +18,7 @@ public class Conn {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	private static Connection conn;
 	
-	public static Connection getConn(){
+	protected static Connection getConn(){
 		if (Optional.ofNullable(conn).isPresent()) {
 			return conn;
 		} 
@@ -26,6 +26,19 @@ public class Conn {
 			new Conn();
 		}
 		return conn;
+	}
+	
+	/**
+	 * 关闭Connection
+	 */
+	protected static void close(){
+		try {
+			if (Optional.ofNullable(conn).isPresent()) {
+				conn.close();
+			}
+		} catch (IOException e) {
+			new Conn().logger.debug(ExceptionUtils.getStackTrace(e));
+		}
 	}
 	
 	private Conn(){ conn(); }

@@ -12,6 +12,11 @@ import com.jfinal.template.Engine;
 import rabbitmq.controller.RabbitMQController;
 
 public class Config extends JFinalConfig{
+	@Override
+	public void afterJFinalStart() {
+		StartDo.start();
+	}
+	
 	public static void main(String[] args) {
 		JFinal.start("WebContent", 8888, "/", 5);
 	}
@@ -28,10 +33,18 @@ public class Config extends JFinalConfig{
 	
 	@Override
 	public void configEngine(Engine me) {}
+	
 	@Override
 	public void configPlugin(Plugins me) {} 
+	
 	@Override
 	public void configInterceptor(Interceptors me) {} 
+	
 	@Override
 	public void configHandler(Handlers me) {}
+	
+	@Override
+	public void beforeJFinalStop() { 
+		StopDo.stop();
+	}
 }
